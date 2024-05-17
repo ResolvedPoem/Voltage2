@@ -585,8 +585,8 @@ function generateBattery(strength) {
 	let triangleInfo = getNextRight(0,0);
 	let offsetLeft = (window.innerWidth - 2 * triangleInfo[2] * (longestChain-1))/2;
 	let offsetTop = (window.innerHeight - triangleInfo[1] * (totalDepth+1))/2;
-	battery.style.top = `${offsetTop - battery.clientHeight*1.5}px`;
-	battery.style.left = `${offsetLeft - battery.clientHeight*1.5}px`;
+	battery.style.top = `${Math.max(offsetTop - battery.clientHeight*1.5, 0)}px`;
+	battery.style.left = `${Math.max(offsetLeft - battery.clientHeight*1.5,0)}px`;
 	console.log(battery);
 	dragElement(battery);
 	return battery;
