@@ -10,7 +10,7 @@ var nodeGraph = {};
 var fullNodeGraph = {};
 var rand;
 
-var gridOffset;
+var firstOffset;
 var randomize = false;
 var dotsAtDepth;
 var totalDepth;
@@ -31,7 +31,7 @@ var batteryLocation;
 
 //First State
 
-	// var gridOffset = false;
+	// var firstOffset = false;
 	// var dotsAtDepth = {
 	// 	"0":[1,0],
 	// 	"1":[1,0,0],
@@ -46,7 +46,7 @@ var batteryLocation;
 
 //Second State
 	
-	// var gridOffset = false;
+	// var firstOffset = false;
 	// var dotsAtDepth = {
 	// 	"0":[1,0],
 	// 	"1":[1,0,0],
@@ -60,7 +60,7 @@ var batteryLocation;
 //End Second State
 
 //Third State
-	// var gridOffset = true;
+	// var firstOffset = true;
 	// var randomize = false;
 	// var dotsAtDepth = {
 	// 	"0":[1,0,'0'],
@@ -80,7 +80,7 @@ var batteryLocation;
 window.onload = (event) => {
 	const queryString = window.location.search;
 	if(queryString.replace("?","") == 2) {
-		gridOffset = true;
+		firstOffset = true;
 		dotsAtDepth = {
 			"0":[1,'0'],
 			"1":[0],
@@ -89,7 +89,7 @@ window.onload = (event) => {
 			"4":[1,'0'],
 		};
 	} else if(queryString.replace("?","") == 3) {
-		gridOffset = true;
+		firstOffset = true;
 		randomize = false;
 		dotsAtDepth = {
 			"0":[1,0,'0'],
@@ -101,7 +101,7 @@ window.onload = (event) => {
 			"6":[1,0,0],
 		};
 	} else if(queryString.replace("?","") == `random`) {
-		gridOffset = true;
+		firstOffset = true;
 		randomize = true;
 		dotsAtDepth = {
 			"0":[1,0,0],
@@ -113,10 +113,13 @@ window.onload = (event) => {
 			"6":[1,0,0],
 		};
 	} else {
-		gridOffset = false;
+		firstOffset = true;
 		dotsAtDepth = {
-			"0":[0,0,0,'0','0'],
-			"1":[0,0,'0',0,0,'0'],
+			"0":[1,'0'],
+			"1":[0],
+			"2":[0,0],
+			"3":['0'],
+			"4":[1,'0'],
 		};
 	}
 	totalDepth = Object.keys(dotsAtDepth).length - 1;
@@ -155,7 +158,7 @@ function setSeed() {
 	Array.from(document.querySelectorAll(`.gridFill`)).forEach((element) => {
 		element.delete();
 	});
-	generateDots(gridOffset);
+	generateDots(firstOffset);
 	generateLines();
 	let strength = Array.from(document.querySelectorAll(`.goal`)).length;
 	generateBattery(strength);
