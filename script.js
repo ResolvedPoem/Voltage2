@@ -15,6 +15,7 @@ var randomize = false;
 var dotsAtDepth;
 var totalDepth;
 var longestChain;
+var batteryLocation;
 	//example state
 	// var dotsAtDepth = {
 	// 	"0":[1,0],
@@ -114,9 +115,8 @@ window.onload = (event) => {
 	} else {
 		gridOffset = false;
 		dotsAtDepth = {
-			"0":['0'],
-			"1":[0,'0'],
-			"2":[0],
+			"0":[0,0,0,'0','0'],
+			"1":[0,0,'0',0,0,'0'],
 		};
 	}
 	totalDepth = Object.keys(dotsAtDepth).length - 1;
@@ -195,26 +195,6 @@ function setStrength() {
 }
 
 function sendSignal(event) {
-	if(event.target.style.backgroundColor == `rgb(250, 224, 31)`) {
-		Array.from(document.querySelectorAll(`.node`)).forEach((element) => {
-			element.visited = false;
-			element.style.backgroundColor = ``;
-			element.style.border = ``;
-			element.style.boxShadow = ``;
-			element.innerHTML = ``;
-		});
-		Array.from(document.querySelectorAll(`.line`)).forEach((element) => {
-			element.style.backgroundColor = ``;
-			element.style.border = ``;
-		});	
-	Array.from(document.querySelectorAll(`.goal`)).forEach((element) => {
-		element.style.boxShadow = `0 0 20px #0078AB`;
-		element.style.border = `2px solid #0078AB`;
-		element.classList.remove(`completed`);
-		element.classList.remove(`active`);
-	});	
-		return;
-	}
 	let strength = Array.from(document.querySelectorAll(`.goal`)).length;
 	resetGrid();
 	Array.from(document.querySelectorAll(`.gridButton`)).forEach((element) => {
@@ -335,6 +315,7 @@ function resetGrid(rightclick) {
 		element.style.border = ``;
 		element.style.boxShadow = ``;
 		element.innerHTML = ``;
+		element.style.color = `#0078AB`;
 	});
 	Array.from(document.querySelectorAll(`.line`)).forEach((element) => {
 		element.style.backgroundColor = ``;
@@ -504,6 +485,9 @@ function toggleLine(event) {
 		nodeGraph[adjacentNodes[0].id][adjacentNodes[1].id] = 1;
 		nodeGraph[adjacentNodes[1].id][adjacentNodes[0].id] = 1;			
 	}
+  if(batteryLocation) {
+  	sendSignal(batteryLocation);	    	
+  }
 }
 
 function generateGoalNodes(strength){
@@ -598,8 +582,8 @@ function generateBattery(strength) {
 	let triangleInfo = getNextRight(0,0);
 	let offsetLeft = (window.innerWidth - 2 * triangleInfo[2] * (longestChain-1))/2;
 	let offsetTop = (window.innerHeight - triangleInfo[1] * (totalDepth+1))/2;
-	battery.style.top = `${offsetTop}px`;
-	battery.style.left = `${offsetLeft}px`;
+	battery.style.top = `${offsetTop - battery.clientHeight*1.5}px`;
+	battery.style.left = `${offsetLeft - battery.clientHeight*1.5}px`;
 	console.log(battery);
 	dragElement(battery);
 	return battery;
@@ -775,7 +759,8 @@ function dragElement(elmnt) {
     // get the mouse cursor position at startup:
     let overlayedNode = overlayCheck(elmnt, `node`);
     if(overlayedNode[0] && !Array.from(overlayedNode[0].classList).includes(`goal`)) {
-	    sendSignal({target:overlayedNode[0]});
+    	batteryLocation = null;
+	    resetGrid();
     }
     pos3 = e.clientX;
     pos4 = e.clientY;
@@ -803,7 +788,10 @@ function dragElement(elmnt) {
     if(overlayedNode[0] && !Array.from(overlayedNode[0].classList).includes(`goal`)) {
 	    elmnt.style.top = (overlayedNode[0].offsetTop) + "px";
 	    elmnt.style.left = (overlayedNode[0].offsetLeft) + "px";
-	    sendSignal({target:overlayedNode[0]});
+	    batteryLocation = {target:overlayedNode[0]};
+	    if(batteryLocation) {
+	    	sendSignal(batteryLocation);	    	
+	    }
     }
     document.onmouseup = null;
     document.onmousemove = null;
